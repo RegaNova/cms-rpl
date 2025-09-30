@@ -1,9 +1,16 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 
 export default function Register({ onRegister }) {
   const [form, setForm] = useState({ username: "", password: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [animateElements, setAnimateElements] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimateElements(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,24 +32,113 @@ export default function Register({ onRegister }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-6 text-center">Register Admin</h2>
-        {error && <div className="mb-4 text-red-500 text-center">{error}</div>}
-        {success && <div className="mb-4 text-green-600 text-center">{success}</div>}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Username</label>
-          <input type="text" className="w-full border rounded px-3 py-2" value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value }))} />
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-100 p-4 overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-blue-200 opacity-20 animate-float"
+            style={{
+              width: `${Math.random() * 50 + 20}px`,
+              height: `${Math.random() * 50 + 20}px`,
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${i * 2}s`,
+              animationDuration: `${Math.random() * 10 + 15}s`
+            }}
+          />
+        ))}
+      </div>
+
+      <div className={`bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-700 ${animateElements ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <i className="fas fa-user-plus text-white text-2xl"></i>
+          </div>
+          <h2 className="text-3xl font-bold text-gray-800 transform transition-all duration-500 hover:scale-105">Register Admin</h2>
+          <p className="text-gray-500 mt-2">Buat akun admin baru</p>
         </div>
-        <div className="mb-6">
-          <label className="block mb-1 font-medium">Password</label>
-          <input type="password" className="w-full border rounded px-3 py-2" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
+
+        {error && (
+          <div className="mb-6 p-3 bg-red-50 text-red-700 rounded-lg text-center border border-red-200 animate-fade-in">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="mb-6 p-3 bg-green-50 text-green-700 rounded-lg text-center border border-green-200 animate-fade-in">
+            {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className={`transform transition-all duration-500 ${animateElements ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`} style={{ transitionDelay: '0.1s' }}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i className="fas fa-user text-gray-400 transition-transform duration-300 group-hover:scale-110"></i>
+              </div>
+              <input
+                type="text"
+                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:shadow-md group"
+                placeholder="Masukkan username"
+                value={form.username}
+                onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
+
+          <div className={`transform transition-all duration-500 ${animateElements ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`} style={{ transitionDelay: '0.2s' }}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i className="fas fa-lock text-gray-400 transition-transform duration-300 group-hover:scale-110"></i>
+              </div>
+              <input
+                type="password"
+                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:shadow-md group"
+                placeholder="Masukkan password"
+                value={form.password}
+                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
+
+          <div className={`transform transition-all duration-500 ${animateElements ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: '0.3s' }}>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center"
+            >
+              Daftar
+            </button>
+          </div>
+        </form>
+
+        <div className={`mt-6 text-center text-sm text-gray-500 transform transition-all duration-500 ${animateElements ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: '0.4s' }}>
+          Sudah punya akun?{' '}
+          <a href="#" className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-300 hover:underline" onClick={e => { e.preventDefault(); onRegister("login"); }}>Login</a>
         </div>
-        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold">Register</button>
-        <div className="mt-4 text-center text-sm">
-          Sudah punya akun? <a href="#" className="text-blue-600 hover:underline" onClick={e => { e.preventDefault(); onRegister("login"); }}>Login</a>
-        </div>
-      </form>
+      </div>
+
+      <style jsx>{`
+        @keyframes float {
+          0% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+          100% { transform: translateY(0) rotate(0deg); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        .animate-float {
+          animation: float 10s ease-in-out infinite;
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.5s ease-out;
+        }
+      `}</style>
     </div>
   );
 }

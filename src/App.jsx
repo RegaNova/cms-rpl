@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Login from "./auth/Login";
+import AuthPage from "./auth/AuthPage";
 
 function RequireAuth({ children }) {
   const location = useLocation();
@@ -16,7 +16,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
+  <Route path="/login" element={<AuthPage />} />
         <Route path="/dashboard" element={
           <RequireAuth>
             <Dashboard />
