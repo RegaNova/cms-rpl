@@ -16,12 +16,14 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-  <Route path="/login" element={<AuthPage />} />
+        <Route path="/login" element={<AuthPage />} />
         <Route path="/dashboard" element={
           <RequireAuth>
             <Dashboard />
           </RequireAuth>
         } />
+        {/* Tambahkan route untuk root path */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

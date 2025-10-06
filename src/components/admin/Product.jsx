@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Package, Plus, Edit, Trash2, Eye, X, Upload, Search, Filter } from "lucide-react";
+import { Package, Plus, Edit, Trash2, Eye, X, Upload, Search, Image as ImageIcon } from "lucide-react";
 
 const initialProducts = [
   { id: 1, name: "Sistem Informasi Akademik", description: "Aplikasi pengelolaan data akademik sekolah, dari presensi, nilai, hingga laporan siswa.", photo: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80", price: 5000000 },
@@ -23,123 +23,149 @@ const ProductModal = ({ showModal, closeModal, editId, form, setForm, photoFile,
   if (!showModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-fadeIn">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-100 transform transition-all duration-300 scale-95 animate-scaleIn">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-blue-800">{editId ? "Edit Produk" : "Tambah Produk"}</h3>
-          <button className="p-2 rounded-full hover:bg-slate-100 transition-colors" onClick={closeModal}>
-            <X size={20} className="text-slate-500" />
-          </button>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm animate-shake">{error}</div>
-          )}
-          
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Nama Produk *</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="Nama produk"
-              value={form.name}
-              onChange={handleFormChange}
-              required
-              className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
-            />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-2 sm:p-4">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative animate-scaleIn overflow-y-auto max-h-[95vh]">
+        <button 
+          className="absolute top-2 right-2 z-50 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
+          onClick={closeModal}
+          aria-label="Tutup"
+        >
+          <X size={20} />
+        </button>
+        <div className="pt-8 p-4 sm:p-8">
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg flex items-center justify-center mb-4">
+              <Package size={28} />
+            </div>
+            <h3 className="text-2xl font-bold text-slate-800">
+              {editId ? "Edit Produk" : "Tambah Produk"}
+            </h3>
+            <p className="text-slate-500 text-sm mt-1">Lengkapi data produk RPL</p>
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Deskripsi *</label>
-            <textarea
-              name="description"
-              placeholder="Deskripsi produk"
-              value={form.description}
-              onChange={handleFormChange}
-              rows="3"
-              required
-              className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Harga *</label>
-            <div className="relative">
-              <span className="absolute left-4 top-3 text-slate-500">Rp</span>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {error && (
+              <div className="col-span-1 sm:col-span-2 bg-red-50 text-red-600 p-3 rounded-lg text-sm animate-fadeIn">
+                {error}
+              </div>
+            )}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Nama Produk *</label>
               <input
-                type="number"
-                name="price"
-                placeholder="0"
-                value={form.price}
+                type="text"
+                name="name"
+                placeholder="Masukkan nama produk"
+                value={form.name}
                 onChange={handleFormChange}
                 required
-                className="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+                className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Foto Produk *</label>
-            <div className="flex gap-3">
-              <input
-                type="url"
-                name="photo"
-                placeholder="URL foto"
-                value={form.photo}
-                onChange={(e) => {
-                  handleFormChange(e);
-                  setPhotoFile(null);
-                }}
-                className="flex-1 border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
+            
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Deskripsi *</label>
+              <textarea
+                name="description"
+                placeholder="Deskripsi lengkap produk"
+                value={form.description}
+                onChange={handleFormChange}
+                rows="3"
+                required
+                className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
-              <label className="cursor-pointer bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-4 py-3 rounded-xl text-sm font-medium transition-all flex items-center">
-                <Upload size={16} className="mr-2" />
-                Upload
-                <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-              </label>
+            </div>
+            
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Harga *</label>
+              <div className="relative">
+                <span className="absolute left-4 top-3 text-slate-500">Rp</span>
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="0"
+                  value={form.price}
+                  onChange={handleFormChange}
+                  required
+                  className="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+            
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-slate-700 mb-2">Foto Produk</label>
+              <div className="space-y-3">
+                <input
+                  type="url"
+                  name="photo"
+                  placeholder="URL foto produk"
+                  value={form.photo}
+                  onChange={(e) => {
+                    handleFormChange(e);
+                    setPhotoFile(null);
+                  }}
+                  className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                />
+                <div className="text-center text-xs text-slate-400">atau</div>
+                <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:border-blue-400 transition-colors">
+                  <Upload size={24} className="mx-auto text-slate-400 mb-2" />
+                  <label className="cursor-pointer">
+                    <span className="text-blue-600 font-medium">Upload Foto</span>
+                    <input 
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                  <p className="text-xs text-slate-500 mt-1">PNG, JPG, JPEG (max. 5MB)</p>
+                </div>
+              </div>
             </div>
             
             {(photoFile || form.photo) && (
-              <div className="flex items-center gap-3 mt-3 p-3 bg-slate-50 rounded-xl">
+              <div className="col-span-1 sm:col-span-2 flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                 <img
                   src={photoFile ? URL.createObjectURL(photoFile) : form.photo}
                   alt="Preview"
-                  className="w-16 h-16 object-cover rounded-xl border-2 border-white shadow-sm"
+                  className="w-12 h-12 object-cover rounded-lg"
                 />
-                <span className="text-sm text-slate-600 flex-1 truncate">
-                  {photoFile ? photoFile.name : "Foto dari URL"}
-                </span>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-slate-700">
+                    {photoFile ? photoFile.name : "Foto dari URL"}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    {photoFile ? `${(photoFile.size / 1024 / 1024).toFixed(2)} MB` : "URL foto"}
+                  </p>
+                </div>
                 <button
                   type="button"
-                  className="p-2 hover:bg-slate-200 rounded-full transition-colors"
+                  className="text-red-500 hover:text-red-700"
                   onClick={() => {
                     setPhotoFile(null);
                     setForm((prev) => ({ ...prev, photo: "" }));
                   }}
                 >
-                  <X size={16} className="text-slate-500" />
+                  <X size={16} />
                 </button>
               </div>
             )}
-          </div>
-          
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium transition-colors"
-              onClick={closeModal}
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white text-sm font-semibold shadow-md transition-all"
-            >
-              {editId ? "Update" : "Simpan"}
-            </button>
-          </div>
-        </form>
+            
+            <div className="col-span-1 sm:col-span-2 flex gap-3 pt-4">
+              <button
+                type="button"
+                className="flex-1 px-4 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors font-semibold"
+                onClick={closeModal}
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl hover:from-blue-700 hover:to-cyan-600 font-semibold shadow-lg transition-all"
+              >
+                {editId ? "Update" : "Simpan"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
@@ -150,48 +176,61 @@ const ProductDetailModal = ({ detailProduct, setDetailProduct }) => {
   if (!detailProduct) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 animate-fadeIn">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-100 transform transition-all duration-300 scale-95 animate-scaleIn">
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="text-xl font-bold text-blue-800">Detail Produk</h3>
-          <button className="p-2 rounded-full hover:bg-slate-100 transition-colors" onClick={() => setDetailProduct(null)}>
-            <X size={20} className="text-slate-500" />
-          </button>
-        </div>
-        
-        <div className="text-center mb-5">
-          <div className="relative overflow-hidden rounded-xl mx-auto border-4 border-white shadow-lg">
-            <img
-              src={detailProduct.photo}
-              alt={detailProduct.name}
-              className="w-full h-56 object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-2 sm:p-4">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative animate-scaleIn overflow-y-auto max-h-[95vh]">
+        <button 
+          className="absolute top-2 right-2 z-50 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
+          onClick={() => setDetailProduct(null)}
+          aria-label="Tutup"
+        >
+          <X size={20} />
+        </button>
+        <div className="pt-8 p-4 sm:p-8">
+          <div className="flex flex-col items-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg flex items-center justify-center mb-4">
+              <Package size={28} />
+            </div>
+            <h3 className="text-2xl font-bold text-slate-800">Detail Produk</h3>
+            <p className="text-slate-500 text-sm mt-1">Informasi lengkap produk</p>
           </div>
-          <h4 className="text-2xl font-bold mt-4 text-slate-900">{detailProduct.name}</h4>
-          <div className="inline-block mt-2 px-4 py-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-full text-sm font-semibold">
-            Rp {detailProduct.price?.toLocaleString("id-ID")}
+          
+          <div className="text-center mb-6">
+            <div className="relative overflow-hidden rounded-2xl mx-auto border-4 border-white shadow-lg mb-4">
+              <img
+                src={detailProduct.photo}
+                alt={detailProduct.name}
+                className="w-full h-48 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            </div>
+            <h4 className="text-2xl font-bold text-slate-900 mb-2">{detailProduct.name}</h4>
+            <div className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-full text-sm font-semibold shadow-lg">
+              Rp {detailProduct.price?.toLocaleString("id-ID")}
+            </div>
           </div>
-        </div>
-        
-        <div className="mt-4 p-4 bg-slate-50 rounded-xl border-l-4 border-blue-500">
-          <p className="text-sm text-slate-700 whitespace-pre-line">{detailProduct.description}</p>
-        </div>
-        
-        <div className="mt-6 flex justify-center">
-          <button 
-            onClick={() => setDetailProduct(null)}
-            className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition-colors"
-          >
-            Tutup
-          </button>
+          
+          <div className="bg-slate-50 rounded-xl border-l-4 border-blue-500 p-4">
+            <h5 className="font-semibold text-slate-800 mb-2">Deskripsi Produk</h5>
+            <p className="text-slate-700 whitespace-pre-line text-sm leading-relaxed">
+              {detailProduct.description}
+            </p>
+          </div>
+          
+          <div className="flex justify-center mt-6">
+            <button 
+              onClick={() => setDetailProduct(null)}
+              className="px-6 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors font-semibold"
+            >
+              Tutup
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-// Komponen Utama
+// Komponen Utama (tetap sama seperti sebelumnya)
 const Product = () => {
   const [products, setProducts] = useState(initialProducts);
   const [showModal, setShowModal] = useState(false);
@@ -213,7 +252,7 @@ const Product = () => {
         localStorage.setItem("products", JSON.stringify(initialProducts));
       }
       setIsLoading(false);
-    }, 800); // Simulate loading
+    }, 800); 
   }, []);
 
   // Save data to localStorage whenever products change
@@ -271,26 +310,42 @@ const Product = () => {
     setShowModal(false);
   };
 
-  // Skeleton loading component
-  const SkeletonCard = () => (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100 animate-pulse">
-      <div className="h-48 bg-slate-200"></div>
-      <div className="p-5">
-        <div className="h-6 bg-slate-200 rounded mb-3 w-3/4"></div>
-        <div className="h-4 bg-slate-200 rounded mb-4 w-full"></div>
-        <div className="h-4 bg-slate-200 rounded w-1/2 mb-5"></div>
-        <div className="flex justify-end space-x-3">
-          <div className="h-8 w-16 bg-slate-200 rounded-lg"></div>
-          <div className="h-8 w-16 bg-slate-200 rounded-lg"></div>
-        </div>
-      </div>
-    </div>
+  const TableSkeleton = () => (
+    <>
+      {[...Array(5)].map((_, index) => (
+        <tr key={index} className="animate-pulse">
+          <td className="px-4 py-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-slate-200 rounded-lg"></div>
+              <div className="space-y-2">
+                <div className="h-4 bg-slate-200 rounded w-32"></div>
+                <div className="h-3 bg-slate-200 rounded w-24"></div>
+              </div>
+            </div>
+          </td>
+          <td className="px-4 py-4">
+            <div className="h-4 bg-slate-200 rounded w-48"></div>
+          </td>
+          <td className="px-4 py-4">
+            <div className="h-4 bg-slate-200 rounded w-24"></div>
+          </td>
+          <td className="px-4 py-4">
+            <div className="flex space-x-2">
+              <div className="h-8 w-8 bg-slate-200 rounded-lg"></div>
+              <div className="h-8 w-8 bg-slate-200 rounded-lg"></div>
+              <div className="h-8 w-8 bg-slate-200 rounded-lg"></div>
+            </div>
+          </td>
+        </tr>
+      ))}
+    </>
   );
 
   return (
     <>
       <div className={`p-4 md:p-6 max-w-7xl mx-auto ${showModal || detailProduct ? "blur-sm transition-all duration-300" : ""}`}>
-        <div className="flex flex-col md:flex-row items-center justify-between mb-6 md:mb-8">
+        {/* ... (bagian header dan konten lainnya tetap sama) */}
+        <div className="flex flex-col md:flex-row items-center justify-between mb-6 md:mb-8 mt-14">
           <div className="flex items-center gap-3 mb-4 md:mb-0">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg">
               <Package size={24} />
@@ -326,10 +381,20 @@ const Product = () => {
         </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {[...Array(3)].map((_, index) => (
-              <SkeletonCard key={index} />
-            ))}
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50">
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">Produk</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">Deskripsi</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">Harga</th>
+                  <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <TableSkeleton />
+              </tbody>
+            </table>
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl shadow-md border border-slate-100">
@@ -355,52 +420,93 @@ const Product = () => {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {filteredProducts.map((p) => (
-              <div 
-                key={p.id} 
-                className="bg-white rounded-2xl overflow-hidden shadow-md border border-slate-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group"
-              >
-                <div className="relative overflow-hidden h-48">
-                  <img 
-                    src={p.photo} 
-                    alt={p.name} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="absolute top-3 right-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow">
-                    Rp {p.price?.toLocaleString("id-ID")}
-                  </div>
-                </div>
-                <div className="p-5">
-                  <h3 className="font-bold text-lg text-slate-800 mb-2 line-clamp-1">{p.name}</h3>
-                  <p className="text-slate-600 text-sm mb-4 line-clamp-2">{p.description}</p>
-                  <div className="flex justify-end space-x-2">
-                    <button 
-                      onClick={() => setDetailProduct(p)}
-                      className="p-2 bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg transition-colors duration-200"
-                      title="Lihat Detail"
+          <div className="bg-white rounded-2xl shadow-md border border-slate-100 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50">
+                    <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">Produk</th>
+                    <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">Deskripsi</th>
+                    <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">Harga</th>
+                    <th className="px-4 py-4 text-left text-sm font-semibold text-slate-700">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredProducts.map((product) => (
+                    <tr 
+                      key={product.id} 
+                      className="hover:bg-slate-50 transition-colors duration-200 group"
                     >
-                      <Eye size={18} />
-                    </button>
-                    <button 
-                      onClick={() => openEdit(p)}
-                      className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200"
-                      title="Edit"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(p.id)}
-                      className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200"
-                      title="Hapus"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                      <td className="px-4 py-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="relative">
+                            <img
+                              src={product.photo}
+                              alt={product.name}
+                              className="w-12 h-12 rounded-lg object-cover border border-slate-200 shadow-sm"
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200"></div>
+                          </div>
+                          <div>
+                            <div className="font-medium text-slate-900 text-sm">{product.name}</div>
+                            <div className="text-slate-500 text-xs flex items-center mt-1">
+                              <ImageIcon size={12} className="mr-1" />
+                              Foto tersedia
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="max-w-md">
+                          <p className="text-slate-700 text-sm line-clamp-2">
+                            {product.description}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-full text-sm font-semibold shadow-sm">
+                          Rp {product.price?.toLocaleString("id-ID")}
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center space-x-2">
+                          <button 
+                            onClick={() => setDetailProduct(product)}
+                            className="p-2 bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg transition-colors duration-200 group/tooltip relative"
+                            title="Lihat Detail"
+                          >
+                            <Eye size={18} />
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                              Lihat Detail
+                            </div>
+                          </button>
+                          <button 
+                            onClick={() => openEdit(product)}
+                            className="p-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200 group/tooltip relative"
+                            title="Edit"
+                          >
+                            <Edit size={18} />
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                              Edit
+                            </div>
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(product.id)}
+                            className="p-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200 group/tooltip relative"
+                            title="Hapus"
+                          >
+                            <Trash2 size={18} />
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-xs rounded opacity-0 group-hover/tooltip:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                              Hapus
+                            </div>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
@@ -444,12 +550,6 @@ const Product = () => {
         }
         .animate-shake {
           animation: shake 0.3s ease-in-out;
-        }
-        .line-clamp-1 {
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
         }
         .line-clamp-2 {
           display: -webkit-box;

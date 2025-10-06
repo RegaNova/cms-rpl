@@ -2,9 +2,194 @@ import React, { useState, useEffect } from "react";
 import { Settings2, Plus, Edit2, Trash2, User, Search, Filter, Upload, X, ChevronDown, ChevronUp } from "lucide-react";
 
 const initialTeam = [
-  { id: 1, name: "Ahmad Rizki", role: "Frontend", photo: "https://placehold.co/100x100?text=AR", joinDate: "2024-01-15", email: "ahmad.rizki@company.com", status: "Active" },
-  { id: 2, name: "Sarah Wijaya", role: "Backend", photo: "https://placehold.co/100x100?text=SW", joinDate: "2024-02-20", email: "sarah.wijaya@company.com", status: "Active" },
+  { id: 1, name: "Kevin Bagus Nugraha", role: "Frontend", photo: "https://placehold.co/100x100?text=KN", joinDate: "2024-01-15", email: "kevinbagus129.@company.com", status: "Active" },
+  { id: 2, name: "Nasya Asriva", role: "Backend", photo: "https://placehold.co/100x100?text=NA", joinDate: "2024-02-20", email: "nasya233@company.com", status: "Active" },
 ];
+
+// Komponen Modal DeveloperTeam
+const DeveloperTeamModal = ({ showModal, closeModal, editId, form, setForm, photoFile, setPhotoFile, error, handleSubmit, divisions }) => {
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setPhotoFile(e.target.files[0]);
+      setForm((prev) => ({ ...prev, photo: "" }));
+    }
+  };
+
+  if (!showModal) return null;
+
+  return (
+    <>
+      {/* Backdrop terpisah */}
+      <div 
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 animate-fadeIn"
+        onClick={closeModal}
+      />
+      
+      {/* Modal content */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
+        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative animate-scaleIn overflow-y-auto max-h-[95vh] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <button 
+            className="absolute top-2 right-2 z-50 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
+            onClick={closeModal}
+            aria-label="Tutup"
+          >
+            <X size={20} />
+          </button>
+          <div className="pt-8 p-4 sm:p-8">
+            <div className="flex flex-col items-center mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg flex items-center justify-center mb-4">
+                <User size={28} />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-800">
+                {editId ? "Edit Anggota" : "Tambah Anggota"}
+              </h3>
+              <p className="text-slate-500 text-sm mt-1">Lengkapi data anggota tim</p>
+            </div>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {error && (
+                <div className="col-span-1 sm:col-span-2 bg-red-50 text-red-600 p-3 rounded-lg text-sm animate-fadeIn">
+                  {error}
+                </div>
+              )}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap *</label>
+                <input 
+                  type="text" 
+                  className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Masukkan nama anggota"
+                  value={form.name}
+                  onChange={handleFormChange}
+                  name="name"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Email *</label>
+                <input 
+                  type="email" 
+                  className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="email@company.com"
+                  value={form.email}
+                  onChange={handleFormChange}
+                  name="email"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Divisi *</label>
+                <select
+                  className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  value={form.role}
+                  onChange={handleFormChange}
+                  name="role"
+                  required
+                >
+                  <option value="">Pilih Divisi</option>
+                  {divisions.map((div) => (
+                    <option key={div.id} value={div.name}>{div.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Status</label>
+                <select
+                  className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                  value={form.status}
+                  onChange={handleFormChange}
+                  name="status"
+                >
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="On Leave">On Leave</option>
+                </select>
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">Tanggal Bergabung</label>
+                <input 
+                  type="date" 
+                  className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={form.joinDate}
+                  onChange={handleFormChange}
+                  name="joinDate"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-2">Foto Profil</label>
+                <div className="space-y-3">
+                  <input 
+                    type="url" 
+                    className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    placeholder="URL foto profil"
+                    value={form.photo}
+                    onChange={(e) => { 
+                      handleFormChange(e);
+                      setPhotoFile(null);
+                    }}
+                    name="photo"
+                  />
+                  <div className="text-center text-xs text-slate-400">atau</div>
+                  <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:border-blue-400 transition-colors">
+                    <Upload size={24} className="mx-auto text-slate-400 mb-2" />
+                    <label className="cursor-pointer">
+                      <span className="text-blue-600 font-medium">Upload Foto</span>
+                      <input 
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                    </label>
+                    <p className="text-xs text-slate-500 mt-1">PNG, JPG, JPEG (max. 5MB)</p>
+                  </div>
+                </div>
+              </div>
+              {photoFile && (
+                <div className="col-span-1 sm:col-span-2 flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                  <img 
+                    src={URL.createObjectURL(photoFile)} 
+                    alt="Preview" 
+                    className="w-12 h-12 object-cover rounded-lg" 
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-slate-700">{photoFile.name}</p>
+                    <p className="text-xs text-slate-500">{(photoFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                  </div>
+                  <button 
+                    type="button"
+                    className="text-red-500 hover:text-red-700"
+                    onClick={() => setPhotoFile(null)}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              )}
+              <div className="col-span-1 sm:col-span-2 flex gap-3 pt-4">
+                <button 
+                  type="button" 
+                  className="flex-1 px-4 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors font-semibold"
+                  onClick={closeModal}
+                >
+                  Batal
+                </button>
+                <button 
+                  type="submit" 
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl hover:from-blue-700 hover:to-cyan-600 font-semibold shadow-lg transition-all"
+                >
+                  {editId ? "Update" : "Simpan"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default function DeveloperTeam() {
   const [team, setTeam] = useState(initialTeam);
@@ -18,7 +203,6 @@ export default function DeveloperTeam() {
   const [selectedRole, setSelectedRole] = useState("");
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
-  // Ambil data divisi dari localStorage
   const divisions = (() => {
     try {
       const saved = localStorage.getItem('divisions');
@@ -40,7 +224,6 @@ export default function DeveloperTeam() {
     }
   })();
 
-  // Filter team berdasarkan pencarian dan role
   useEffect(() => {
     let result = team;
     
@@ -56,7 +239,6 @@ export default function DeveloperTeam() {
       result = result.filter(dev => dev.role === selectedRole);
     }
     
-    // Sorting
     if (sortConfig.key) {
       result.sort((a, b) => {
         if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -120,7 +302,6 @@ export default function DeveloperTeam() {
     e.preventDefault();
     let photoURL = form.photo;
     if (photoFile) {
-      // Simpan file ke local url untuk preview, dan ke state base64 agar persist di data
       photoURL = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
@@ -187,13 +368,14 @@ export default function DeveloperTeam() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 sm:p-6">
+    // HAPUS blur dari container utama
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 sm:p-6 mt-14">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6">
           <div className="flex items-center gap-4">
             <div className="relative">
-             <span className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg mb-2">
+              <span className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg">
                 <Settings2 size={24} className="sm:size-7" />
               </span>
             </div>
@@ -247,8 +429,6 @@ export default function DeveloperTeam() {
                 </select>
               </div>
             </div>
-            
-            {/* Reset Filter button removed */}
           </div>
         </div>
 
@@ -414,160 +594,18 @@ export default function DeveloperTeam() {
         </div>
 
         {/* Modal */}
-        {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn p-2 sm:p-4">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative animate-scaleIn overflow-y-auto max-h-[95vh]">
-              <button 
-                className="absolute top-2 right-2 z-50 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
-                onClick={() => setShowModal(false)}
-                aria-label="Tutup"
-              >
-                <X size={20} />
-              </button>
-              <div className="pt-8 p-4 sm:p-8">
-                <div className="flex flex-col items-center mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg flex items-center justify-center mb-4">
-                    <User size={28} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-800">
-                    {editId ? "Edit Anggota" : "Tambah Anggota"}
-                  </h3>
-                  <p className="text-slate-500 text-sm mt-1">Lengkapi data anggota tim</p>
-                </div>
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {error && (
-                    <div className="col-span-1 sm:col-span-2 bg-red-50 text-red-600 p-3 rounded-lg text-sm animate-fadeIn">
-                      {error}
-                    </div>
-                  )}
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap *</label>
-                    <input 
-                      type="text" 
-                      className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="Masukkan nama anggota"
-                      value={form.name}
-                      onChange={e => setForm({ ...form, name: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Email *</label>
-                    <input 
-                      type="email" 
-                      className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                      placeholder="email@company.com"
-                      value={form.email}
-                      onChange={e => setForm({ ...form, email: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Divisi *</label>
-                    <select
-                      className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                      value={form.role}
-                      onChange={e => setForm({ ...form, role: e.target.value })}
-                      required
-                    >
-                      <option value="">Pilih Divisi</option>
-                      {divisions.map((div) => (
-                        <option key={div.id} value={div.name}>{div.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Status</label>
-                    <select
-                      className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                      value={form.status}
-                      onChange={e => setForm({ ...form, status: e.target.value })}
-                    >
-                      <option value="Active">Active</option>
-                      <option value="Inactive">Inactive</option>
-                      <option value="On Leave">On Leave</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Tanggal Bergabung</label>
-                    <input 
-                      type="date" 
-                      className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      value={form.joinDate}
-                      onChange={e => setForm({ ...form, joinDate: e.target.value })}
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Foto Profil</label>
-                    <div className="space-y-3">
-                      <input 
-                        type="url" 
-                        className="w-full border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                        placeholder="URL foto profil"
-                        value={form.photo}
-                        onChange={e => { setForm({ ...form, photo: e.target.value }); setPhotoFile(null); }}
-                      />
-                      <div className="text-center text-xs text-slate-400">atau</div>
-                      <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:border-blue-400 transition-colors">
-                        <Upload size={24} className="mx-auto text-slate-400 mb-2" />
-                        <label className="cursor-pointer">
-                          <span className="text-blue-600 font-medium">Upload Foto</span>
-                          <input 
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={e => {
-                              if (e.target.files && e.target.files[0]) {
-                                setPhotoFile(e.target.files[0]);
-                                setForm({ ...form, photo: "" });
-                              }
-                            }}
-                          />
-                        </label>
-                        <p className="text-xs text-slate-500 mt-1">PNG, JPG, JPEG (max. 5MB)</p>
-                      </div>
-                    </div>
-                  </div>
-                  {photoFile && (
-                    <div className="col-span-1 sm:col-span-2 flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
-                      <img 
-                        src={URL.createObjectURL(photoFile)} 
-                        alt="Preview" 
-                        className="w-12 h-12 object-cover rounded-lg" 
-                      />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-slate-700">{photoFile.name}</p>
-                        <p className="text-xs text-slate-500">{(photoFile.size / 1024 / 1024).toFixed(2)} MB</p>
-                      </div>
-                      <button 
-                        type="button"
-                        className="text-red-500 hover:text-red-700 "
-                        onClick={() => setPhotoFile(null)}
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  )}
-                  <div className="col-span-1 sm:col-span-2 flex gap-3 pt-4">
-                    <button 
-                      type="button" 
-                      className="flex-1 px-4 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors font-semibold"
-                      onClick={() => setShowModal(false)}
-                    >
-                      Batal
-                    </button>
-                    <button 
-                      type="submit" 
-                      className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-xl hover:from-blue-700 hover:to-cyan-600 font-semibold shadow-lg transition-all"
-                    >
-                      {editId ? "Update" : "Simpan"}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
+        <DeveloperTeamModal
+          showModal={showModal}
+          closeModal={() => setShowModal(false)}
+          editId={editId}
+          form={form}
+          setForm={setForm}
+          photoFile={photoFile}
+          setPhotoFile={setPhotoFile}
+          error={error}
+          handleSubmit={handleSubmit}
+          divisions={divisions}
+        />
       </div>
     </div>
   );

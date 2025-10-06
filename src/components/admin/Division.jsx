@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Layers, Plus, Edit2, Trash2 } from "lucide-react";
+import { Plus, Edit2, Trash2 } from "lucide-react";
+import { CgCircleci } from "react-icons/cg"
 
 const initialDivisions = [
   { id: 1, name: "Frontend" },
@@ -50,11 +51,11 @@ export default function Division() {
   };
 
   return (
-    <div className="p-2 sm:p-4">
+    <div className="p-2 sm:p-4 mt-14">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 gap-3 sm:gap-4">
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg">
-            <Layers size={24} className="sm:size-7" />
+            <CgCircleci size={24} className="sm:size-7" />
           </span>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 tracking-tight scroll-mt-20 md:scroll-mt-0">Data Divisi</h1>
@@ -85,7 +86,7 @@ export default function Division() {
                   <tr key={d.id} className={`border-b border-slate-100 group transition-all duration-200 ${i % 2 === 0 ? 'bg-slate-50/50' : 'bg-white'} hover:bg-cyan-50 hover:shadow-lg`}>
                     <td className="px-3 sm:px-6 py-2 sm:py-4 font-mono text-blue-700 text-base sm:text-lg font-bold tracking-wider">{d.id}</td>
                     <td className="px-3 sm:px-6 py-2 sm:py-4 text-slate-800 text-sm sm:text-base flex items-center gap-2">
-                      <Layers size={16} className="sm:size-5 text-cyan-500" />
+                      <CgCircleci size={16} className="sm:size-5 text-cyan-500" />
                       <span>{d.name}</span>
                     </td>
                     <td className="px-3 sm:px-6 py-2 sm:py-4">
@@ -107,7 +108,7 @@ export default function Division() {
             <button className="absolute top-2 right-2 text-slate-400 hover:text-red-500 text-2xl" onClick={() => setShowModal(false)}>&times;</button>
             <div className="flex flex-col items-center mb-4">
               <span className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg mb-2">
-                <Layers size={24} className="sm:size-7" />
+                <CgCircleci size={24} className="sm:size-7" />
               </span>
               <h3 className="text-xl sm:text-2xl font-bold text-blue-700">{editId ? "Edit Divisi" : "Tambah Divisi"}</h3>
               <p className="text-slate-500 text-xs sm:text-sm mt-1">Masukkan data divisi dengan benar</p>

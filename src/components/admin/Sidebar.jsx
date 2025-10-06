@@ -8,22 +8,21 @@ import {
   LayoutDashboard, 
   Menu, 
   Package, 
-  Layers, 
-  ChevronLeft, 
-  ChevronRight, 
   BookOpen, 
   Award, 
   Image, 
   User, 
   X 
 } from "lucide-react"
+import { CgCircleci } from "react-icons/cg"
 import { useState, useRef } from "react"
-import logo from '../../assets/logo-1.png'
+import logo2 from '../../assets/logo-1.png'
 import icon2 from '../../assets/icon-5.png'
 
-const Sidebar = ({ menu, setMenu, collapsed, setCollapsed, icon }) => {
+const Sidebar = ({ menu, setMenu, collapsed, setCollapsed, logo, icon }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  // ... (defaultMenus dan state menus lainnya)
   const defaultMenus = [
     { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
     { id: "product", label: "Product RPL", icon: <Package size={20} /> },
@@ -32,7 +31,7 @@ const Sidebar = ({ menu, setMenu, collapsed, setCollapsed, icon }) => {
     { id: "siswa", label: "Data Siswa", icon: <Users size={20} /> },
     { id: "guru", label: "Data Guru", icon: <UserCog size={20} /> },
     { id: "graduated", label: "Alumni", icon: <Award size={20} /> },
-    { id: "division", label: "Divisi", icon: <Layers size={20} /> },
+    { id: "division", label: "Divisi", icon: <CgCircleci size={20} /> },
     { id: "gallery", label: "Gallery", icon: <Image size={20} /> },
     { id: "posisi", label: "Posisi", icon: <BookOpen size={20} /> },
   ]
@@ -62,95 +61,105 @@ const Sidebar = ({ menu, setMenu, collapsed, setCollapsed, icon }) => {
     dragOverItem.current = undefined
   }
 
+
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Mobile Menu Button - Z-index: 50 (tetap tinggi di mobile) */}
       {!mobileOpen && (
         <button
-          className="fixed top-4 left-4 z-50 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl p-3 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200 block md:hidden focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
+          className="fixed top-3 sm:top-4 left-4 z-50 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl p-2 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200 block md:hidden focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2"
           onClick={() => setMobileOpen(true)}
           aria-label="Buka menu"
         >
-          <Menu size={24} />
+          <Menu size={20} />
         </button>
       )}
 
-      {/* Mobile Overlay */}
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-30 transition-opacity duration-300 md:hidden ${
           mobileOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
         }`}
         onClick={() => setMobileOpen(false)}
         aria-hidden={!mobileOpen}
       />
 
-      {/* Sidebar */}
+      {/* Desktop Toggle Button - Z-index: 60 (paling tinggi) */}
+      <button
+        className={`fixed top-8 z-50 bg-blue-950 border-2 border-blue-600 text-white rounded-full p-3 shadow-2xl hover:bg-blue-900 hover:scale-105 hover:border-cyan-400 transition-all duration-300 ease-in-out hidden md:flex items-center justify-center ${
+          collapsed ? 'left-16' : 'left-64'
+        }`}
+        onClick={() => setCollapsed(!collapsed)}
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        style={{
+          width: '44px',
+          height: '44px',
+          transform: 'translateX(-50%)'
+        }}
+      >
+        {/* Garis Tiga dengan Animasi */}
+        <div className="flex flex-col gap-1.5">
+          <div className={`w-4 h-0.5 bg-cyan-400 transition-all duration-300 ${
+            collapsed ? '' : 'rotate-45 translate-y-2'
+          }`} />
+          <div className={`w-4 h-0.5 bg-cyan-400 transition-all duration-300 ${
+            collapsed ? '' : 'opacity-0'
+          }`} />
+          <div className={`w-4 h-0.5 bg-cyan-400 transition-all duration-300 ${
+            collapsed ? '' : '-rotate-45 -translate-y-2'
+          }`} />
+        </div>
+      </button>
+
+      {/* Sidebar - Z-index: 40 (di bawah Header z-50 dan Toggle Button z-60) */}
       <div
-        className={`fixed left-0 top-0 h-screen overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-4 flex flex-col shadow-2xl border-r border-blue-500/20 z-50 transition-all duration-300 ease-in-out
+        className={`fixed left-0 top-0 h-screen overflow-y-auto bg-blue-950 text-white p-4 flex flex-col shadow-2xl border-r border-blue-800 z-40 transition-all duration-300 ease-in-out
           ${collapsed ? "w-16" : "w-64"}
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0
           [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
         `}
-        style={{ maxWidth: "100vw" }}
-        role="navigation"
-        aria-label="Sidebar utama"
-        aria-expanded={!collapsed}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6 pt-1">
+        {/* ... (konten sidebar lainnya tetap sama) */}
+        <div className="flex items-center justify-between mb-4 pt-1">
           {!collapsed ? (
             <>
-              <div className="flex items-center gap-3">
-                <img
-                  src={logo}
-                  alt="Logo RPL"
-                  className="h-8 w-auto object-contain select-none"
-                  draggable={false}
-                />
+              <div className="flex flex-col items-start gap-1">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={logo2}
+                    alt="Logo RPL"
+                    className="h-8 w-auto object-contain select-none"
+                    draggable={false}
+                  />
+                </div>
               </div>
-
-              <button
-                className="p-2 rounded-xl hover:bg-slate-700/50 transition-all hidden md:block focus:outline-none focus:ring-2 focus:ring-slate-400"
-                onClick={() => setCollapsed(!collapsed)}
-                aria-label="Collapse sidebar"
-              >
-                <ChevronLeft size={18} className="text-slate-400" />
-              </button>
             </>
           ) : (
             <div className="flex flex-col items-center w-full gap-3">
               <img
-                src={icon2 }
+                src={icon2}
                 alt="Logo RPL (ikon)"
                 className="h-8 w-8 object-contain select-none"
                 draggable={false}
               />
-
-              <button
-                className="p-2 rounded-xl hover:bg-slate-700/50 transition-all hidden md:block focus:outline-none focus:ring-2 focus:ring-slate-400"
-                onClick={() => setCollapsed(!collapsed)}
-                aria-label="Expand sidebar"
-              >
-                <ChevronRight size={18} className="text-slate-400" />
-              </button>
             </div>
           )}
 
           {/* Close Button for Mobile */}
           <button
-            className="p-2 rounded-xl hover:bg-slate-700/50 transition-all md:hidden text-slate-400 hover:text-white"
+            className="p-2 rounded-xl hover:bg-slate-700/50 transition-all md:hidden text-slate-400 hover:text-white mt-3"
             onClick={() => setMobileOpen(false)}
             aria-label="Tutup menu"
           >
             <X size={20} />
           </button>
         </div>
+        <div className="border-t border-blue-700/50 mb-4"></div>
 
         {/* Menu Items */}
         <nav className="flex-1 space-y-2">
           {!collapsed && (
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-4 mb-3">
+            <p className="text-xs font-semibold text-white-500 uppercase tracking-wider px-4 mb-3">
               Menu Utama
             </p>
           )}
@@ -219,10 +228,13 @@ const Sidebar = ({ menu, setMenu, collapsed, setCollapsed, icon }) => {
           </ul>
         </nav>
 
+        {/* Garis Pemisah antara Menu Items dan Profile Section */}
+        <div className="border-t border-blue-700/50 my-4"></div>
+
         {/* Profile Section */}
-        <div className="mt-6 pt-4 border-t border-slate-700/50">
+        <div className="pt-4">
           {!collapsed && (
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-4 mb-3">
+            <p className="text-xs font-semibold text-white-500 uppercase tracking-wider px-4 mb-3">
               Account
             </p>
           )}

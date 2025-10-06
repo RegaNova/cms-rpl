@@ -87,7 +87,7 @@ const GraduatedModal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
       <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl max-h-[85vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 mt-14">
           <h3 className="text-lg font-semibold text-slate-800">{editId ? "Edit Alumni" : "Tambah Alumni"}</h3>
           <button className="p-1 hover:bg-slate-100 rounded-full" onClick={() => setShowModal(false)}>
             <X size={18} className="text-slate-500" />
