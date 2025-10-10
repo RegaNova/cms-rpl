@@ -192,7 +192,7 @@ export default function Login({ onRegister, onForgot }) {
           </div>
         </div>
 
-        <p className={`mt-8 text-center text-sm text-gray-500 transform transition-all duration-500 ${animateElements ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: '0.6s' }}>
+  <p className={`mt-6 text-center text-sm text-gray-500 transform transition-all duration-500 ${animateElements ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: '0.6s' }}>
           Belum punya akun?{' '}
           <a
             href="#"

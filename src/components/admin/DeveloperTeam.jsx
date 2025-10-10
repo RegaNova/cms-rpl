@@ -6,7 +6,7 @@ const initialTeam = [
   { id: 2, name: "Nasya Asriva", role: "Backend", photo: "https://placehold.co/100x100?text=NA", joinDate: "2024-02-20", email: "nasya233@company.com", status: "Active" },
 ];
 
-// Komponen Modal DeveloperTeam
+ 
 const DeveloperTeamModal = ({ showModal, closeModal, editId, form, setForm, photoFile, setPhotoFile, error, handleSubmit, divisions }) => {
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -24,13 +24,13 @@ const DeveloperTeamModal = ({ showModal, closeModal, editId, form, setForm, phot
 
   return (
     <>
-      {/* Backdrop terpisah */}
+      
       <div 
         className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 animate-fadeIn"
         onClick={closeModal}
       />
       
-      {/* Modal content */}
+      
       <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative animate-scaleIn overflow-y-auto max-h-[95vh] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <button 
@@ -40,7 +40,7 @@ const DeveloperTeamModal = ({ showModal, closeModal, editId, form, setForm, phot
           >
             <X size={20} />
           </button>
-          <div className="pt-8 p-4 sm:p-8">
+          <div className="pt-4 p-4 sm:p-6">
             <div className="flex flex-col items-center mb-6">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg flex items-center justify-center mb-4">
                 <User size={28} />
@@ -369,7 +369,7 @@ export default function DeveloperTeam() {
 
   return (
     // HAPUS blur dari container utama
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 sm:p-6 mt-14">
+  <div className="min-h-screen bg-transparent p-4 sm:p-6 mt-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6">

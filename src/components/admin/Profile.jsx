@@ -58,7 +58,6 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 flex items-center gap-3">
@@ -71,9 +70,8 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Profile Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          {/* Cover Image */}
+          
           <div className="h-32 bg-gradient-to-r from-blue-600 to-cyan-600 relative">
             <div className="absolute -bottom-16 left-8">
               <div className="relative">
@@ -89,8 +87,8 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Profile Info Header */}
-          <div className="pt-20 px-8 pb-6 border-b border-slate-200">
+          
+          <div className="pt-6 px-8 pb-6 border-b border-slate-200">
             <div className="flex items-start justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-slate-900">{profileData.name}</h2>
@@ -118,7 +116,7 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Tabs */}
+          
           <div className="px-8 pt-4 border-b border-slate-200">
             <div className="flex gap-6">
               <button
@@ -169,11 +167,11 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Tab Content */}
+          
           <div className="p-8">
             {activeTab === "profile" && (
               <div className="space-y-6">
-                {/* Profile Information */}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -270,7 +268,7 @@ const Profile = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
+                
                 {isEditing && (
                   <div className="flex items-center gap-3 pt-4">
                     <button
@@ -304,7 +302,7 @@ const Profile = () => {
                   </div>
                 </div>
 
-                {/* Change Password Form */}
+                
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold text-slate-900">Ubah Password</h3>
                   
@@ -385,7 +383,7 @@ const Profile = () => {
                   </div>
                 </div>
 
-                {/* Notification Settings */}
+                
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
                     <div>

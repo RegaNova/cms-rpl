@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from "react"
-import { User, LogOut, User as UserIcon, ChevronDown } from "lucide-react"
+import { Menu, User, LogOut, User as UserIcon, ChevronDown } from "lucide-react"
 
-const Header = ({ collapsed = false }) => {
+const Header = ({ collapsed = false, onMenuToggle }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const dropdownRef = useRef(null)
+  const headerRef = useRef(null)
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -19,81 +19,112 @@ const Header = ({ collapsed = false }) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const setHeaderVar = () => {
+      try {
+        const h = headerRef.current ? headerRef.current.offsetHeight : 0
+        document.documentElement.style.setProperty("--header-height", h ? `${h}px` : "0px")
+      } catch (err) {}
+    }
+
+    setHeaderVar()
+    window.addEventListener("resize", setHeaderVar)
+    return () => {
+      window.removeEventListener("resize", setHeaderVar)
+      try {
+        document.documentElement.style.removeProperty("--header-height")
+      } catch (err) {}
+    }
+  }, [])
+
   const handleLogout = () => {
-    // Add your logout logic here
     console.log("Logout clicked")
     setIsProfileOpen(false)
-    // Example: localStorage.removeItem('token');
-    // Example: window.location.href = '/login';
   }
 
   const handleProfile = () => {
-    // Add your profile navigation logic here
     console.log("Profile clicked")
     setIsProfileOpen(false)
-    // Example: window.location.href = '/profile';
   }
 
   return (
     <header
-      className={`fixed top-0 right-0 z-30 bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200/50 transition-all duration-300
+      ref={headerRef}
+      className={`
+        fixed top-0 right-0 left-0 z-30 
+        bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200/50 
+        transition-all duration-300
         ${collapsed ? "md:left-16" : "md:left-64"}
       `}
-      style={{
-        width: collapsed ? "calc(100% - 4rem)" : "calc(100% - 16rem)",
-      }}
     >
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-        {/* Left Section - Empty for balance */}
-        <div className="flex-1"></div>
-
-        {/* Center Section - Title */}
-        <div className="flex-1 flex justify-center">
-          <div className="text-center">
-            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent">
+        
+        <div className="w-8 md:w-0">
+          <button
+            onClick={onMenuToggle}
+            className="md:hidden p-2 rounded-lg hover:bg-slate-50 text-slate-700"
+            aria-label="Toggle menu"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
+        
+        
+        <div className="flex-grow flex justify-center min-w-0">
+          <div className="text-center truncate">
+            <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent truncate max-w-[150px] sm:max-w-none">
               ADMIN PPLG SMEMSA
             </h1>
-            <p className="text-xs text-slate-500 hidden sm:block mt-0.5">
-              Management System Dashboard
+            <p className="text-xs text-slate-500 hidden md:block mt-0.5">
+              Management System Admin
             </p>
           </div>
         </div>
 
-        {/* Right Section - Profile Only */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end">
-          {/* Profile Section with Dropdown */}
+        
+        <div className="flex items-center gap-2 sm:gap-3 justify-end">
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:bg-slate-50 rounded-xl p-1.5 sm:p-2 transition-all group"
+              className="flex items-center gap-2 sm:gap-3 cursor-pointer hover:bg-slate-50 rounded-xl p-1.5 sm:p-2 transition-all group focus:outline-none focus:ring-2 focus:ring-slate-200"
             >
               <div className="hidden sm:flex flex-col items-end">
-                <p className="text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                <p className="text-sm font-semibold text-slate-800 group-hover:text-slate-900 transition-colors whitespace-nowrap">
                   Admin User
                 </p>
-                <p className="text-xs text-slate-500">Super Admin</p>
+                <p className="text-xs text-slate-500 whitespace-nowrap">Super Admin</p>
               </div>
               
               <div className="flex items-center gap-1">
-                <div className="w-9 h-9 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform">
-                  <User size={18} className="text-white" strokeWidth={2.5} />
+              
+                <div className="w-8 h-8 sm:w-9 sm:h-9 bg-slate-700 rounded-full flex items-center justify-center shadow-sm group-hover:shadow transition-all shrink-0">
+                  <User size={16} className="text-white" strokeWidth={2.5} />
                 </div>
                 <ChevronDown 
                   size={16} 
-                  className={`text-slate-500 transition-transform duration-200 ${
+                  className={`text-slate-500 transition-transform duration-200 hidden sm:block ${
                     isProfileOpen ? "rotate-180" : ""
                   }`} 
                 />
               </div>
             </button>
 
-            {/* Dropdown Menu */}
+            
             {isProfileOpen && (
-              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200/50 backdrop-blur-md z-40 animate-in fade-in-0 zoom-in-95">
-                {/* Profile Info */}
+              <div 
+                className="
+                  absolute right-0 top-full mt-2 w-60 sm:w-64 
+                  bg-white rounded-xl shadow-xl border border-slate-200 
+                  z-40 
+                  origin-top-right animate-in fade-in-0 zoom-in-95
+                "
+              >
+                
                 <div className="p-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                    <div className="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center shadow-sm shrink-0">
                       <UserIcon size={20} className="text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -111,14 +142,14 @@ const Header = ({ collapsed = false }) => {
                   </div>
                 </div>
 
-                {/* Menu Items */}
+                
                 <div className="p-2">
                   <button
                     onClick={handleProfile}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 rounded-lg transition-colors group"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 rounded-lg transition-colors group text-left"
                   >
-                    <div className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                      <UserIcon size={16} className="text-blue-600" />
+                    <div className="w-8 h-8 bg-slate-100 rounded-full flex items-center justify-center group-hover:bg-slate-200 transition-colors shrink-0">
+                      <UserIcon size={16} className="text-slate-600" />
                     </div>
                     <div className="text-left">
                       <p className="font-medium">Profile Saya</p>
@@ -128,9 +159,9 @@ const Header = ({ collapsed = false }) => {
 
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group mt-1"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors group mt-1 text-left"
                   >
-                    <div className="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center group-hover:bg-red-100 transition-colors">
+                    <div className="w-8 h-8 bg-red-50 rounded-full flex items-center justify-center group-hover:bg-red-100 transition-colors shrink-0">
                       <LogOut size={16} className="text-red-600" />
                     </div>
                     <div className="text-left">
@@ -140,7 +171,7 @@ const Header = ({ collapsed = false }) => {
                   </button>
                 </div>
 
-                {/* Footer */}
+                
                 <div className="p-3 bg-slate-50 rounded-b-xl border-t border-slate-100">
                   <p className="text-xs text-slate-500 text-center">
                     Terakhir login: Hari ini, 07:14

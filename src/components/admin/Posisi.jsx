@@ -48,13 +48,13 @@ export default function Posisi() {
 
   return (
     <div className="p-2 sm:p-4">
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 gap-3 sm:gap-4">
+  <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 gap-3 sm:gap-4 mt-6">
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg">
             <Users size={24} className="sm:size-7" />
           </span>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 tracking-tight scroll-mt-20 md:scroll-mt-0">Data Posisi</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 tracking-tight scroll-mt-6 md:scroll-mt-0">Data Posisi</h1>
             <p className="text-slate-600 mt-1 text-xs sm:text-sm">Kelola daftar posisi di lingkungan RPL</p>
           </div>
         </div>
