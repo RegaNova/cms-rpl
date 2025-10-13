@@ -1,7 +1,9 @@
 import React from "react";
-import { HashRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { HashRouter, Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import AuthPage from "./auth/AuthPage";
+import Login from "./auth/Login";
+import Register from "./auth/Register";
+import ForgotPassword from "./auth/ForgotPassword";
 
 function RequireAuth({ children }) {
   const location = useLocation();
@@ -63,11 +65,42 @@ class ErrorBoundary extends React.Component {
 }
 
 const App = () => {
+  const LoginPage = () => {
+    const navigate = useNavigate();
+    const onNavigate = (to) => {
+      if (to === 'login') navigate('/login');
+      if (to === 'register') navigate('/register');
+      if (to === 'forgot') navigate('/forgot');
+    };
+    return <Login onNavigate={onNavigate} />;
+  };
+
+  const RegisterPage = () => {
+    const navigate = useNavigate();
+    const onNavigate = (to) => {
+      if (to === 'login') navigate('/login');
+      if (to === 'register') navigate('/register');
+      if (to === 'forgot') navigate('/forgot');
+    };
+    return <Register onNavigate={onNavigate} />;
+  };
+
+  const ForgotPage = () => {
+    const navigate = useNavigate();
+    const onNavigate = (to) => {
+      if (to === 'login') navigate('/login');
+      if (to === 'register') navigate('/register');
+      if (to === 'forgot') navigate('/forgot');
+    };
+    return <ForgotPassword onNavigate={onNavigate} />;
+  };
   return (
     <HashRouter>
       <ErrorBoundary>
         <Routes>
-          <Route path="/login" element={<AuthPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot" element={<ForgotPage />} />
           <Route
             path="/dashboard"
             element={

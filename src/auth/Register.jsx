@@ -1,144 +1,162 @@
+import React, { useState } from 'react';
+import AuthLayout from './AuthPage';
+import { User, BookOpen, Mail, Lock, ArrowRight } from 'lucide-react';
 
-import { useState, useEffect } from "react";
 
-export default function Register({ onRegister }) {
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [animateElements, setAnimateElements] = useState(false);
+const Register = ({ onNavigate }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    nim: '',
+    password: '',
+    confirmPassword: '',
+    agree: false
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setAnimateElements(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.username || !form.password) {
-      setError("Semua field wajib diisi!");
+  const handleSubmit = () => {
+    if (formData.password !== formData.confirmPassword) {
+      alert('Password tidak cocok!');
       return;
     }
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    if (users.find(u => u.username === form.username)) {
-      setError("Username sudah terdaftar!");
+    if (!formData.agree) {
+      alert('Anda harus menyetujui syarat dan ketentuan');
       return;
     }
-    users.push({ ...form });
-    localStorage.setItem("users", JSON.stringify(users));
-    setSuccess("Registrasi berhasil! Silakan login.");
-    setError("");
-    setForm({ username: "", password: "" });
-    setTimeout(() => onRegister("login"), 1200);
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      alert('Registrasi berhasil! (Demo)');
+      onNavigate('login');
+    }, 1500);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
   };
 
   return (
-  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-100 p-4 overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        {[...Array(5)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-blue-200 opacity-20 animate-float"
-            style={{
-              width: `${Math.random() * 50 + 20}px`,
-              height: `${Math.random() * 50 + 20}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${i * 2}s`,
-              animationDuration: `${Math.random() * 10 + 15}s`
-            }}
+    <AuthLayout 
+      title="Buat Akun Baru" 
+      subtitle="Daftar untuk mengakses portal akademik"
+    >
+      <div className="space-y-5">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onKeyPress={handleKeyPress}
+              className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
+              placeholder="Nama Lengkap "
+            />
+          </div>
+        </div>
+
+        {/* <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">NIS</label>
+          <div className="relative">
+            <BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              value={formData.nim}
+              onChange={(e) => setFormData({...formData, nim: e.target.value})}
+              onKeyPress={handleKeyPress}
+              className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
+              placeholder="20251013"
+            />
+          </div>
+        </div> */}
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onKeyPress={handleKeyPress}
+              className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
+              placeholder="nama@mahasiswa.ac.id"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              onKeyPress={handleKeyPress}
+              className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password</label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="password"
+              value={formData.confirmPassword}
+              onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+              onKeyPress={handleKeyPress}
+              className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <label className="flex items-start cursor-pointer">
+          <input
+            type="checkbox"
+            checked={formData.agree}
+            onChange={(e) => setFormData({...formData, agree: e.target.checked})}
+            className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mt-1"
           />
-        ))}
-      </div>
+          <span className="ml-2 text-sm text-gray-600">
+            Saya setuju dengan <span className="text-[#015a78] font-medium">Syarat dan Ketentuan</span> serta <span className="text-[#015a78] font-medium">Kebijakan Privasi</span>
+          </span>
+        </label>
 
-      <div className={`bg-white p-8 rounded-2xl shadow-xl w-full max-w-md transform transition-all duration-700 ${animateElements ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <i className="fas fa-user-plus text-white text-2xl"></i>
-          </div>
-          <h2 className="text-3xl font-bold text-gray-800 transform transition-all duration-500 hover:scale-105">Register Admin</h2>
-          <p className="text-gray-500 mt-2">Buat akun admin baru</p>
-        </div>
+        <button
+          onClick={handleSubmit}
+          disabled={isLoading}
+          className="w-full bg-[#015a78] text-white py-3 rounded-xl font-semibold hover:bg-[#024961] transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
+        >
+          {isLoading ? (
+            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            <>
+              Daftar Sekarang
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </>
+          )}
+        </button>
 
-        {error && (
-          <div className="mb-6 p-3 bg-red-50 text-red-700 rounded-lg text-center border border-red-200 animate-fade-in">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="mb-6 p-3 bg-green-50 text-green-700 rounded-lg text-center border border-green-200 animate-fade-in">
-            {success}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className={`transform transition-all duration-500 ${animateElements ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`} style={{ transitionDelay: '0.1s' }}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i className="fas fa-user text-gray-400 transition-transform duration-300 group-hover:scale-110"></i>
-              </div>
-              <input
-                type="text"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:shadow-md group"
-                placeholder="Masukkan username"
-                value={form.username}
-                onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
-                required
-              />
-            </div>
-          </div>
-
-          <div className={`transform transition-all duration-500 ${animateElements ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}`} style={{ transitionDelay: '0.2s' }}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <i className="fas fa-lock text-gray-400 transition-transform duration-300 group-hover:scale-110"></i>
-              </div>
-              <input
-                type="password"
-                className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 hover:shadow-md group"
-                placeholder="Masukkan password"
-                value={form.password}
-                onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                required
-              />
-            </div>
-          </div>
-
-          <div className={`transform transition-all duration-500 ${animateElements ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: '0.3s' }}>
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center"
-            >
-              Daftar
-            </button>
-          </div>
-        </form>
-
-        <div className={`mt-6 text-center text-sm text-gray-500 transform transition-all duration-500 ${animateElements ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: '0.4s' }}>
-          Sudah punya akun?{' '}
-          <a href="#" className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-300 hover:underline" onClick={e => { e.preventDefault(); onRegister("login"); }}>Login</a>
+        <div className="text-center pt-4">
+          <span className="text-gray-600">Sudah punya akun? </span>
+          <button
+            onClick={() => onNavigate('login')}
+            className="text-[#015a78] hover:text-[#08465a] font-semibold"
+          >
+            Masuk
+          </button>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0% { transform: translateY(0) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(5deg); }
-          100% { transform: translateY(0) rotate(0deg); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-float {
-          animation: float 10s ease-in-out infinite;
-        }
-        .animate-fade-in {
-          animation: fadeIn 0.5s ease-out;
-        }
-      `}</style>
-    </div>
+    </AuthLayout>
   );
-}
+};
+
+export default Register;
