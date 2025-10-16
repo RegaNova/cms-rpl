@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import AuthLayout from "./AuthPage";
 import { Mail, Lock, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({ onNavigate }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -10,12 +12,68 @@ const Login = ({ onNavigate }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!formData.email || !formData.password) {
+      alert("Email dan password wajib diisi!");
+      return;
+    }
+
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          remember: formData.remember,
+        }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(
+          `Login gagal (${response.status}) — ${
+            errText || "Periksa email/password"
+          }`
+        );
+      }
+
+      const data = await response.json();
+
+      // Simpan token ke localStorage
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      // Simpan role ke localStorage
+      if (data.user && data.user.role) {
+        localStorage.setItem("userRole", data.user.role);
+        
+      }
+
+      // Redirect berdasarkan role (guard data.user to avoid runtime errors)
+      const role = data && data.user && data.user.role;
+      if (role === "admin") {
+        console.log("Redirect ke /admin");
+        navigate("/dashboard", { replace: true });
+      } else if (role === "user") {
+        console.log("Redirect ke /dashboard");
+        navigate("/dashboard", { replace: true });
+      } else {
+        alert("Role tidak dikenali: " + role);
+      }
+
+      console.log("Data user:", data);
+    } catch (error) {
+      console.error("Error saat login:", error);
+      alert(error.message);
+    } finally {
       setIsLoading(false);
-      alert("Login berhasil! (Demo)");
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -30,6 +88,7 @@ const Login = ({ onNavigate }) => {
       subtitle="Masuk ke akun Anda untuk melanjutkan"
     >
       <div className="space-y-6">
+       
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Email
@@ -44,11 +103,12 @@ const Login = ({ onNavigate }) => {
               }
               onKeyPress={handleKeyPress}
               className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
-              placeholder="nama@mahasiswa.ac.id"
+              placeholder="nama@gmail.com"
             />
           </div>
         </div>
 
+       
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Password
@@ -67,6 +127,7 @@ const Login = ({ onNavigate }) => {
             />
           </div>
         </div>
+
 
         <div className="flex items-center justify-between">
           <label className="flex items-center cursor-pointer">
@@ -89,10 +150,11 @@ const Login = ({ onNavigate }) => {
           </button>
         </div>
 
+      
         <button
           onClick={handleSubmit}
           disabled={isLoading}
-          className="w-full bg-gradient-to-r bg-[#015a78] text-white py-3 rounded-xl font-semibold  transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
+          className="w-full bg-[#015a78] text-white hover:bg-[#004c65] py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 group disabled:opacity-70"
         >
           {isLoading ? (
             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -108,7 +170,7 @@ const Login = ({ onNavigate }) => {
           <span className="text-gray-600">Belum punya akun? </span>
           <button
             onClick={() => onNavigate("register")}
-            className="text-[#015a78] font-semibold"
+            className="text-[#015a78] font-semibold underline"
           >
             Daftar
           </button>

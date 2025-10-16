@@ -1,34 +1,71 @@
 import React, { useState } from 'react';
-import AuthLayout from './AuthPage';
-import { User, BookOpen, Mail, Lock, ArrowRight } from 'lucide-react';
-
+import AuthR from './AuthR';
+import { User, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const Register = ({ onNavigate }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    nim: '',
     password: '',
     confirmPassword: '',
-    agree: false
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+      alert("Semua field wajib diisi!");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       alert('Password tidak cocok!');
       return;
     }
-    if (!formData.agree) {
-      alert('Anda harus menyetujui syarat dan ketentuan');
-      return;
-    }
+
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const response = await fetch("http://localhost:8000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          password_confirmation: formData.confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Error:", data);
+        throw new Error(data.message || "Registrasi gagal. Coba lagi.");
+      }
+
+      // ✅ Simpan token ke localStorage
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loggedIn", "true");
+        
+      }
+
+      // ✅ Simpan role (kalau dikirim backend)
+      if (data.user && data.user.role) {
+        localStorage.setItem("userRole", data.user.role);
+      }
+
+      alert("Registrasi berhasil! Silakan login.");
+      onNavigate("login");
+
+    } catch (error) {
+      console.error("Error saat registrasi:", error);
+      alert(error.message);
+    } finally {
       setIsLoading(false);
-      alert('Registrasi berhasil! (Demo)');
-      onNavigate('login');
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -38,11 +75,12 @@ const Register = ({ onNavigate }) => {
   };
 
   return (
-    <AuthLayout 
+    <AuthR 
       title="Buat Akun Baru" 
       subtitle="Daftar untuk mengakses portal akademik"
     >
       <div className="space-y-5">
+        {/* Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
           <div className="relative">
@@ -50,29 +88,15 @@ const Register = ({ onNavigate }) => {
             <input
               type="text"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               onKeyPress={handleKeyPress}
               className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
-              placeholder="Nama Lengkap "
+              placeholder="Nama Lengkap"
             />
           </div>
         </div>
 
-        {/* <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">NIS</label>
-          <div className="relative">
-            <BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              value={formData.nim}
-              onChange={(e) => setFormData({...formData, nim: e.target.value})}
-              onKeyPress={handleKeyPress}
-              className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
-              placeholder="20251013"
-            />
-          </div>
-        </div> */}
-
+        {/* Email */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
           <div className="relative">
@@ -80,7 +104,7 @@ const Register = ({ onNavigate }) => {
             <input
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               onKeyPress={handleKeyPress}
               className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
               placeholder="nama@mahasiswa.ac.id"
@@ -88,6 +112,7 @@ const Register = ({ onNavigate }) => {
           </div>
         </div>
 
+        {/* Password */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
           <div className="relative">
@@ -95,7 +120,7 @@ const Register = ({ onNavigate }) => {
             <input
               type="password"
               value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               onKeyPress={handleKeyPress}
               className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
               placeholder="••••••••"
@@ -103,6 +128,7 @@ const Register = ({ onNavigate }) => {
           </div>
         </div>
 
+        {/* Confirm Password */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password</label>
           <div className="relative">
@@ -110,7 +136,7 @@ const Register = ({ onNavigate }) => {
             <input
               type="password"
               value={formData.confirmPassword}
-              onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               onKeyPress={handleKeyPress}
               className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#015a78] focus:outline-none transition-colors"
               placeholder="••••••••"
@@ -118,18 +144,7 @@ const Register = ({ onNavigate }) => {
           </div>
         </div>
 
-        <label className="flex items-start cursor-pointer">
-          <input
-            type="checkbox"
-            checked={formData.agree}
-            onChange={(e) => setFormData({...formData, agree: e.target.checked})}
-            className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mt-1"
-          />
-          <span className="ml-2 text-sm text-gray-600">
-            Saya setuju dengan <span className="text-[#015a78] font-medium">Syarat dan Ketentuan</span> serta <span className="text-[#015a78] font-medium">Kebijakan Privasi</span>
-          </span>
-        </label>
-
+        {/* Button */}
         <button
           onClick={handleSubmit}
           disabled={isLoading}
@@ -155,7 +170,7 @@ const Register = ({ onNavigate }) => {
           </button>
         </div>
       </div>
-    </AuthLayout>
+    </AuthR>
   );
 };
 

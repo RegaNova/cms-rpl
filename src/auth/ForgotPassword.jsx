@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AuthLayout from './AuthPage';
+import AuthFP from './AuthFP';
 import { Mail, ArrowRight, ChevronLeft } from 'lucide-react';
 
 
@@ -55,12 +55,12 @@ const ForgotPassword = ({ onNavigate }) => {
   }
 
   return (
-    <AuthLayout 
+    <AuthFP 
       title="Lupa Password" 
       subtitle="Masukkan email untuk reset password"
     >
       <div className="space-y-6">
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-10">
           <p className="text-sm text-[#015a78]">
             Masukkan email yang terdaftar. Kami akan mengirimkan link untuk reset password Anda.
           </p>
@@ -76,7 +76,7 @@ const ForgotPassword = ({ onNavigate }) => {
               onChange={(e) => setEmail(e.target.value)}
               onKeyPress={handleKeyPress}
               className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-colors"
-              placeholder="nama@mahasiswa.ac.id"
+              placeholder="nama@gmail.com"
             />
           </div>
         </div>
@@ -104,7 +104,7 @@ const ForgotPassword = ({ onNavigate }) => {
           Kembali ke Login
         </button>
       </div>
-    </AuthLayout>
+    </AuthFP>
   );
 };
 
