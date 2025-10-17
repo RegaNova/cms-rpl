@@ -18,8 +18,8 @@ import {
   X 
 } from "lucide-react"
 import { useState, useRef } from "react"
-import logo2 from '../../assets/logo-1.png'
-import icon2 from '../../assets/icon-5.png'
+import logo2 from '../../assets/images/logo-1.png'
+import icon2 from '../../assets/images/icon-5.png'
 
 const Sidebar = ({ menu, setMenu, collapsed, setCollapsed, logo, icon }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
