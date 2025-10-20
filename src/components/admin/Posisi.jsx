@@ -48,7 +48,7 @@ export default function Posisi() {
 
   return (
     <div className="p-2 sm:p-4">
-  <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 gap-3 sm:gap-4 mt-6">
+  <div className="flex flex-col sm:flex-row justify-between items-center mb-6 sm:mb-8 gap-3 sm:gap-4 ">
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white shadow-lg">
             <Users size={24} className="sm:size-7" />

@@ -386,7 +386,7 @@ const Gallery = () => {
   const momenCount = gallery.filter(item => item.category === "momen").length;
 
   return (
-  <div className="min-h-screen bg-transparent p-4 sm:p-6 mt-6">
+  <div className="min-h-screen bg-transparent p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6">

@@ -29,8 +29,7 @@ const DeveloperTeamModal = ({ showModal, closeModal, editId, form, setForm, phot
         className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 animate-fadeIn"
         onClick={closeModal}
       />
-      
-      
+
       <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
         <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative animate-scaleIn overflow-y-auto max-h-[95vh] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <button 
@@ -368,8 +367,7 @@ export default function DeveloperTeam() {
   };
 
   return (
-    // HAPUS blur dari container utama
-  <div className="min-h-screen bg-transparent p-4 sm:p-6 mt-6">
+  <div className="min-h-screen bg-transparent p-4 sm:p-6 ">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-6">
@@ -396,7 +394,6 @@ export default function DeveloperTeam() {
           </button>
         </div>
 
-        {/* Filter Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
           <div className="flex flex-col sm:flex-row gap-4 items-end">
             <div className="flex-1">
@@ -432,9 +429,7 @@ export default function DeveloperTeam() {
           </div>
         </div>
 
-        {/* Table Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          {/* Table Header */}
           <div className="px-6 py-4 border-b border-slate-200">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold text-slate-800">Daftar Anggota Tim</h3>
@@ -444,7 +439,6 @@ export default function DeveloperTeam() {
             </div>
           </div>
 
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -577,7 +571,6 @@ export default function DeveloperTeam() {
             </table>
           </div>
 
-          {/* Table Footer */}
           {filteredTeam.length > 0 && (
             <div className="px-6 py-4 border-t border-slate-200 bg-slate-50">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -593,7 +586,6 @@ export default function DeveloperTeam() {
           )}
         </div>
 
-        {/* Modal */}
         <DeveloperTeamModal
           showModal={showModal}
           closeModal={() => setShowModal(false)}
