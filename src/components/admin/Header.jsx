@@ -3,9 +3,42 @@ import { Menu, User, LogOut, User as UserIcon, ChevronDown } from "lucide-react"
 
 const Header = ({ collapsed = false, onMenuToggle }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [user, setUser] = useState({ name: "", role: "" })
   const dropdownRef = useRef(null)
   const headerRef = useRef(null)
 
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token")
+        if (!token) return
+
+        const response = await fetch("http://localhost:8000/api/user", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data user")
+        }
+
+        const data = await response.json()
+        setUser({
+          name: data.name || "User",
+          role: data.role || "Tidak diketahui",
+        })
+      } catch (error) {
+        console.error("Error fetching user:", error)
+      }
+    }
+
+    fetchUser()
+  }, [])
+
+  // 🔹 Tutup dropdown saat klik di luar
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -19,6 +52,7 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
     }
   }, [])
 
+  // 🔹 Atur tinggi header untuk CSS var
   useEffect(() => {
     if (typeof window === "undefined") return
 
@@ -39,9 +73,34 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
     }
   }, [])
 
-  const handleLogout = () => {
+  // 🔹 Fungsi Logout
+  const handleLogout = async () => {
     console.log("Logout clicked")
     setIsProfileOpen(false)
+
+    try {
+      const token = localStorage.getItem("token")
+      if (!token) return
+
+      await fetch("http://localhost:8000/api/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      })
+    } catch (err) {
+      console.error("Error logout:", err)
+    } finally {
+      // Hapus data dari localStorage
+      localStorage.removeItem("loggedIn")
+      localStorage.removeItem("token")
+      localStorage.removeItem("userRole")
+      localStorage.removeItem("userEmail")
+
+      // Redirect ke halaman login
+      window.location.href = "/login"
+    }
   }
 
   const handleProfile = () => {
@@ -61,6 +120,7 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
     >
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         
+        {/* Tombol Toggle Sidebar */}
         <div className="w-8 md:w-0">
           <button
             onClick={onMenuToggle}
@@ -71,7 +131,7 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
           </button>
         </div>
         
-        
+        {/* Judul Tengah */}
         <div className="flex-grow flex justify-center min-w-0">
           <div className="text-center truncate">
             <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent truncate max-w-[150px] sm:max-w-none">
@@ -83,7 +143,7 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
           </div>
         </div>
 
-        
+        {/* Profil Dropdown */}
         <div className="flex items-center gap-2 sm:gap-3 justify-end">
           <div className="relative" ref={dropdownRef}>
             <button
@@ -92,26 +152,24 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
             >
               <div className="hidden sm:flex flex-col items-end">
                 <p className="text-sm font-semibold text-slate-800 group-hover:text-slate-900 transition-colors whitespace-nowrap">
-                  Admin User
+                  {user.name || "Admin User"}
                 </p>
-                <p className="text-xs text-slate-500 whitespace-nowrap">Super Admin</p>
+                <p className="text-xs text-slate-500 whitespace-nowrap">
+                  {user.role || "Super Admin"}
+                </p>
               </div>
               
               <div className="flex items-center gap-1">
-              
                 <div className="w-8 h-8 sm:w-9 sm:h-9 bg-slate-700 rounded-full flex items-center justify-center shadow-sm group-hover:shadow transition-all shrink-0">
                   <User size={16} className="text-white" strokeWidth={2.5} />
                 </div>
                 <ChevronDown 
                   size={16} 
-                  className={`text-slate-500 transition-transform duration-200 hidden sm:block ${
-                    isProfileOpen ? "rotate-180" : ""
-                  }`} 
+                  className={`text-slate-500 transition-transform duration-200 hidden sm:block ${isProfileOpen ? "rotate-180" : ""}`} 
                 />
               </div>
             </button>
 
-            
             {isProfileOpen && (
               <div 
                 className="
@@ -121,7 +179,7 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
                   origin-top-right animate-in fade-in-0 zoom-in-95
                 "
               >
-                
+                {/* Info User */}
                 <div className="p-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center shadow-sm shrink-0">
@@ -129,10 +187,10 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-slate-900 truncate">
-                        Admin User
+                        {user.name || "Admin User"}
                       </p>
                       <p className="text-xs text-slate-500 truncate">
-                        admin@pplg-smemsa.sch.id
+                        {user.role || "Super Admin"}
                       </p>
                       <div className="flex items-center gap-1 mt-1">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -142,7 +200,7 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
                   </div>
                 </div>
 
-                
+                {/* Tombol Menu */}
                 <div className="p-2">
                   <button
                     onClick={handleProfile}
@@ -171,7 +229,7 @@ const Header = ({ collapsed = false, onMenuToggle }) => {
                   </button>
                 </div>
 
-                
+                {/* Footer Dropdown */}
                 <div className="p-3 bg-slate-50 rounded-b-xl border-t border-slate-100">
                   <p className="text-xs text-slate-500 text-center">
                     Terakhir login: Hari ini, 07:14

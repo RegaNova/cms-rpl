@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import AuthLayout from "./AuthPage";
-import { Mail, Lock, ArrowRight } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Mail, Lock, ArrowRight, CheckCircle, XCircle } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = ({ onNavigate }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [successMessage, setSuccessMessage] = useState(location.state?.message || null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -12,9 +14,16 @@ const Login = ({ onNavigate }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  };
+
   const handleSubmit = async () => {
     if (!formData.email || !formData.password) {
-      alert("Email dan password wajib diisi!");
+      showNotification("Email dan password wajib diisi!", "error");
       return;
     }
 
@@ -44,33 +53,36 @@ const Login = ({ onNavigate }) => {
 
       const data = await response.json();
 
-      // Simpan token ke localStorage
+      
       if (data.token) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("loggedIn", "true");
       }
 
-      // Simpan role ke localStorage
+      
       if (data.user && data.user.role) {
         localStorage.setItem("userRole", data.user.role);
-        
       }
 
-      // Redirect berdasarkan role (guard data.user to avoid runtime errors)
+     
+      if (data.user && data.user.email) {
+        localStorage.setItem("userEmail", data.user.email);
+      }
+
+  
       const role = data && data.user && data.user.role;
       if (role === "admin") {
-        console.log("Redirect ke /admin");
-        navigate("/dashboard", { replace: true });
-      } else if (role === "user") {
         console.log("Redirect ke /dashboard");
         navigate("/dashboard", { replace: true });
       } else {
-        alert("Role tidak dikenali: " + role);
+        console.log("Redirect ke /user");
+        navigate("/user", { replace: true });
       }
 
       console.log("Data user:", data);
     } catch (error) {
       console.error("Error saat login:", error);
-      alert(error.message);
+      showNotification(error.message, "error");
     } finally {
       setIsLoading(false);
     }
@@ -87,6 +99,41 @@ const Login = ({ onNavigate }) => {
       title="Selamat Datang"
       subtitle="Masuk ke akun Anda untuk melanjutkan"
     >
+
+      {successMessage && (
+        <div className="fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg border bg-green-50 border-green-200 text-green-800 flex items-center gap-3 max-w-sm animate-in slide-in-from-top-2">
+          <CheckCircle className="w-5 h-5 text-green-600" />
+          <p className="text-sm font-medium">{successMessage}</p>
+          <button
+            onClick={() => setSuccessMessage(null)}
+            className="ml-auto text-gray-400 hover:text-gray-600"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {notification && (
+        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg border flex items-center gap-3 max-w-sm animate-in slide-in-from-top-2 ${
+          notification.type === 'success'
+            ? 'bg-green-50 border-green-200 text-green-800'
+            : 'bg-red-50 border-red-200 text-red-800'
+        }`}>
+          {notification.type === 'success' ? (
+            <CheckCircle className="w-5 h-5 text-green-600" />
+          ) : (
+            <XCircle className="w-5 h-5 text-red-600" />
+          )}
+          <p className="text-sm font-medium">{notification.message}</p>
+          <button
+            onClick={() => setNotification(null)}
+            className="ml-auto text-gray-400 hover:text-gray-600"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="space-y-6">
        
         <div>

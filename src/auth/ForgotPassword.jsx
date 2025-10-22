@@ -76,7 +76,7 @@ const ForgotPassword = ({ onNavigate }) => {
               onChange={(e) => setEmail(e.target.value)}
               onKeyPress={handleKeyPress}
               className="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-indigo-500 focus:outline-none transition-colors"
-              placeholder="nama@gmail.com"
+              placeholder="nama@gmail.com" 
             />
           </div>
         </div>

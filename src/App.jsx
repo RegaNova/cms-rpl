@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  HashRouter,
+  BrowserRouter,
   Routes,
   Route,
   Navigate,
@@ -8,6 +8,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
+import UserDashboard from "./pages/UserDashboard";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import ForgotPassword from "./auth/ForgotPassword";
@@ -16,9 +17,28 @@ import ForgotPassword from "./auth/ForgotPassword";
 function RequireAuth({ children }) {
   const location = useLocation();
   const loggedIn = localStorage.getItem("loggedIn") === "true";
+
   if (!loggedIn) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
+
+  return children;
+}
+
+// 🔒 Admin Route – hanya bisa diakses kalau sudah login dan role admin
+function RequireAdmin({ children }) {
+  const location = useLocation();
+  const loggedIn = localStorage.getItem("loggedIn") === "true";
+  const userRole = localStorage.getItem("userRole");
+
+  if (!loggedIn) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (userRole !== "admin") {
+    return <Navigate to="/user" replace />;
+  }
+
   return children;
 }
 
@@ -26,7 +46,12 @@ function RequireAuth({ children }) {
 function GuestOnly({ children }) {
   const loggedIn = localStorage.getItem("loggedIn") === "true";
   if (loggedIn) {
-    return <Navigate to="/dashboard" replace />;
+    const userRole = localStorage.getItem("userRole");
+    if (userRole === "admin") {
+      return <Navigate to="/dashboard" replace />;
+    } else {
+      return <Navigate to="/user" replace />;
+    }
   }
   return children;
 }
@@ -108,7 +133,7 @@ const App = () => {
     localStorage.removeItem("userEmail");
 
     // Redirect ke login
-    window.location.href = "#/login"; // Karena kamu pakai HashRouter
+    window.location.href = "#/login"; // Karena kamu pakai BrowserRouter
   };
 
   // Wrapper halaman Login, Register, Forgot
@@ -143,7 +168,7 @@ const App = () => {
   };
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <ErrorBoundary>
         <Routes>
           {/* 🔐 Halaman Auth hanya untuk yang belum login */}
@@ -172,12 +197,22 @@ const App = () => {
             }
           />
 
-          {/* 🧭 Dashboard hanya untuk user yang sudah login */}
+          {/* 🧭 Dashboard hanya untuk admin */}
           <Route
             path="/dashboard"
             element={
-              <RequireAuth>
+              <RequireAdmin>
                 <Dashboard onLogout={handleLogout} />
+              </RequireAdmin>
+            }
+          />
+
+          {/* 🧭 User Dashboard untuk user biasa */}
+          <Route
+            path="/user"
+            element={
+              <RequireAuth>
+                <UserDashboard />
               </RequireAuth>
             }
           />
@@ -187,7 +222,7 @@ const App = () => {
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </ErrorBoundary>
-    </HashRouter>
+    </BrowserRouter>
   );
 };
 

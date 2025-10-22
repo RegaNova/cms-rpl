@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AuthR from './AuthR';
-import { User, Mail, Lock, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight, CheckCircle, XCircle } from 'lucide-react';
 
 const Register = ({ onNavigate }) => {
   const [formData, setFormData] = useState({
@@ -10,15 +10,21 @@ const Register = ({ onNavigate }) => {
     confirmPassword: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  };
 
   const handleSubmit = async () => {
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      alert("Semua field wajib diisi!");
+      showNotification("Semua field wajib diisi!", "error");
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert('Password tidak cocok!');
+      showNotification('Password tidak cocok!', "error");
       return;
     }
 
@@ -45,24 +51,11 @@ const Register = ({ onNavigate }) => {
         throw new Error(data.message || "Registrasi gagal. Coba lagi.");
       }
 
-      // ✅ Simpan token ke localStorage
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("loggedIn", "true");
-        
-      }
-
-      // ✅ Simpan role (kalau dikirim backend)
-      if (data.user && data.user.role) {
-        localStorage.setItem("userRole", data.user.role);
-      }
-
-      alert("Registrasi berhasil! Silakan login.");
-      onNavigate("login");
+      onNavigate("login", { state: { message: "Registrasi berhasil! Silakan login dengan akun Anda." } });
 
     } catch (error) {
       console.error("Error saat registrasi:", error);
-      alert(error.message);
+      showNotification(error.message, "error");
     } finally {
       setIsLoading(false);
     }
@@ -75,12 +68,34 @@ const Register = ({ onNavigate }) => {
   };
 
   return (
-    <AuthR 
-      title="Buat Akun Baru" 
+    <AuthR
+      title="Buat Akun Baru"
       subtitle="Daftar untuk mengakses portal akademik"
     >
+      
+      {notification && (
+        <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg border flex items-center gap-3 max-w-sm animate-in slide-in-from-top-2 ${
+          notification.type === 'success'
+            ? 'bg-green-50 border-green-200 text-green-800'
+            : 'bg-red-50 border-red-200 text-red-800'
+        }`}>
+          {notification.type === 'success' ? (
+            <CheckCircle className="w-5 h-5 text-green-600" />
+          ) : (
+            <XCircle className="w-5 h-5 text-red-600" />
+          )}
+          <p className="text-sm font-medium">{notification.message}</p>
+          <button
+            onClick={() => setNotification(null)}
+            className="ml-auto text-gray-400 hover:text-gray-600"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="space-y-5">
-        {/* Name */}
+        
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
           <div className="relative">
@@ -96,7 +111,7 @@ const Register = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Email */}
+        
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
           <div className="relative">
@@ -112,7 +127,7 @@ const Register = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Password */}
+       
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
           <div className="relative">
@@ -128,7 +143,7 @@ const Register = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Confirm Password */}
+        
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Konfirmasi Password</label>
           <div className="relative">
@@ -144,7 +159,7 @@ const Register = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Button */}
+        
         <button
           onClick={handleSubmit}
           disabled={isLoading}
