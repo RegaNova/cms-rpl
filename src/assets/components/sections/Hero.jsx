@@ -1,26 +1,25 @@
 export default function Hero() {
   return (
-    <section id="home" className="pt-32 bg-teal-50">
-      <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800">
-            Sinergi Pendidikan <span className="text-teal-600">Vokasi</span> dan
-            <span className="text-teal-600"> Akademik</span>
-          </h1>
-          <p className="mt-6 text-lg text-gray-600">
-            Kolaborasi institusi pendidikan negeri dalam mencetak lulusan
-            unggul, siap kerja, dan berdaya saing global.
-          </p>
-          <button className="mt-8 bg-teal-600 hover:bg-teal-700 text-white px-6 py-3 rounded-lg font-semibold shadow">
-            Jelajahi Program
-          </button>
-        </div>
+    <section
+      className="relative h-screen bg-cover bg-center"
+      style={{
+        backgroundImage: "url('/src/assets/images/view-4.png')",
+      }}
+    >
+      {/* Overlay gelap */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
-        <img
-          src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1"
-          alt="Pendidikan"
-          className="rounded-xl shadow-lg"
-        />
+      {/* Content */}
+      <div className="relative z-10 h-full flex items-center">
+        <div className="max-w-7xl mx-auto px-6 text-white">
+          <h1 className="text-4xl md:text-6xl font-bold max-w-3xl leading-tight">
+           lorem ipsum dolor sit amet
+          </h1>
+          <p className="mt-6 text-lg max-w-2xl text-white/90">
+           Lorem ipsum dolor sit, amet consectetur adipisicing.
+           Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+          </p>
+        </div>
       </div>
     </section>
   );
