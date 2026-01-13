@@ -1,102 +1,138 @@
 import { useEffect, useState } from "react";
-import { Menu, X, LogIn } from "lucide-react";
+import { Menu, X, LogIn, LayoutDashboard } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import useToggle from "../../hooks/useToggle";
+import { useAuth } from "../../../Auth/AuthContext";
 import { NAVIGATION } from "../../constants/navigation";
 import Logo from "../../images/logo-1.png";
 
 export default function Navbar() {
   const { value: open, toggle, close } = useToggle();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
+  // 🔥 DETEKSI SCROLL
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const dashboardPath = user?.role === "admin" ? "/admin" : "/user";
 
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300
-        ${scrolled ? "bg-white shadow-md" : "bg-transparent"}
+        ${scrolled ? "bg-white shadow-sm" : "bg-transparent"}
       `}
     >
-      <nav className="px-6 py-5">
-        <div
-          className={`max-w-7xl mx-auto flex items-center justify-between transition-colors duration-300
+      <nav className="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between">
+        
+        {/* Logo */}
+        <div className="flex items-center">
+          <img
+            src={Logo}
+            alt="Logo Kampus"
+            className="h-10 md:h-12 object-contain"
+          />
+        </div>
+
+        {/* Desktop Menu */}
+        <ul
+          className={`hidden lg:flex gap-8 text-sm font-semibold uppercase transition-colors
             ${scrolled ? "text-gray-800" : "text-white"}
           `}
         >
-          {/* Logo */}
-          <div className="flex items-center">
-            <img
-              src={Logo}
-              alt="Logo Kampus"
-              className="h-10 md:h-12 object-contain"
-            />
-          </div>
+          {NAVIGATION.map((item) => (
+            <li key={item.label} className="hover:underline underline-offset-4">
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+        </ul>
 
-          {/* Desktop Menu */}
-          <ul className="hidden lg:flex gap-10 text-base font-medium">
-            {NAVIGATION.map((item) => (
-              <li
-                key={item.label}
-                className="hover:underline underline-offset-4"
-              >
-                <a href={item.href}>{item.label}</a>
-              </li>
-            ))}
-          </ul>
-
-          {/* Right Actions */}
-          <div className="flex items-center gap-6">
-            <a
-              href="/login"
-              className={`hidden lg:flex items-center gap-2 px-5 py-2 rounded-full border transition
+        {/* Right Actions */}
+        <div className="flex items-center gap-4">
+          {/* LOGIN / DASHBOARD */}
+          {!user ? (
+            <Link
+              to="/login"
+              className={`hidden lg:inline-flex items-center gap-2 px-5 py-1.5 rounded-full border text-sm font-semibold transition
                 ${
                   scrolled
-                    ? "border-gray-300 text-gray-800 hover:bg-gray-100"
-                    : "border-white/50 text-white hover:bg-white hover:text-black"
+                    ? "border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white"
+                    : "border-white text-white hover:bg-white hover:text-black"
                 }
               `}
             >
-              <LogIn size={18} />
-              Login
-            </a>
-
-            <button onClick={toggle} className="lg:hidden">
-              {open ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Menu */}
-        {open && (
-          <div className="lg:hidden mt-4 rounded-xl bg-white shadow-md px-6 py-5 space-y-5 text-gray-800">
-            {NAVIGATION.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={close}
-                className="block hover:underline"
-              >
-                {item.label}
-              </a>
-            ))}
-
-            <a
-              href="/login"
-              onClick={close}
-              className="flex items-center gap-2 pt-4 border-t hover:underline"
+              <LogIn size={16} />
+              LOGIN
+            </Link>
+          ) : (
+            <button
+              onClick={() => navigate(dashboardPath)}
+              className={`hidden lg:inline-flex items-center gap-2 px-5 py-1.5 rounded-full text-sm font-semibold transition
+                ${
+                  scrolled
+                    ? "bg-teal-600 text-white hover:bg-teal-700"
+                    : "bg-white text-black hover:bg-gray-100"
+                }
+              `}
             >
-              <LogIn size={18} />
-              Login
-            </a>
-          </div>
-        )}
+              <LayoutDashboard size={16} />
+              DASHBOARD
+            </button>
+          )}
+
+          {/* Mobile Button */}
+          <button
+            onClick={toggle}
+            className={`lg:hidden transition-colors ${
+              scrolled ? "text-gray-800" : "text-white"
+            }`}
+          >
+            {open ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
       </nav>
+
+      {/* Mobile Menu */}
+      {open && (
+        <div className="lg:hidden bg-white px-6 py-4 space-y-4 text-gray-800 font-semibold uppercase shadow-md">
+          {NAVIGATION.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={close}
+              className="block hover:text-teal-600"
+            >
+              {item.label}
+            </a>
+          ))}
+
+          {!user ? (
+            <Link
+              to="/login"
+              onClick={close}
+              className="inline-flex items-center gap-2 mt-2 px-5 py-2 rounded-full border border-teal-600 text-teal-600 text-sm"
+            >
+              <LogIn size={16} />
+              LOGIN
+            </Link>
+          ) : (
+            <button
+              onClick={() => {
+                close();
+                navigate(dashboardPath);
+              }}
+              className="inline-flex items-center gap-2 mt-2 px-5 py-2 rounded-full bg-teal-600 text-white text-sm"
+            >
+              <LayoutDashboard size={16} />
+              DASHBOARD
+            </button>
+          )}
+        </div>
+      )}
     </header>
   );
 }
